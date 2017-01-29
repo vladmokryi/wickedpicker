@@ -46,7 +46,8 @@
             minutesInterval: 1,
             beforeShow: null,
             show: null,
-            clearable: false
+            clearable: false,
+            useValueFromElement: true
         };
 
     /*
@@ -72,7 +73,7 @@
         this.close = $('.' + this.options.close);
 
         //Create a new Date object based on the default or passing in now value
-        var time = this.timeArrayFromString(this.options.now);
+        var time = this.timeArrayFromString(this.options.useValueFromElement && this.element.val() ? this.element.val() : this.options.now);
         this.options.now = new Date(today.getFullYear(), today.getMonth(), today.getDate(), time[0], time[1], time[2]);
         this.selectedHour = this.parseHours(this.options.now.getHours());
         this.selectedMin = this.parseSecMin(this.options.now.getMinutes());
@@ -115,7 +116,7 @@
                 this.setTime(newTime);
             }
             this.timepicker.css({
-                'z-index': this.element.css('z-index') + 1,
+                'z-index': this.element.zIndex() + 1,
                 position: 'absolute',
                 left: timepickerPos.left,
                 top: timepickerPos.top + $(element)[0].offsetHeight
@@ -212,7 +213,7 @@
                     $(self.hoursElem).focus();
                 }
             });
-            
+
             //Handle click events for closing Wickedpicker
             var clickHandler = function (event) {
                 //Only fire the hide event when you have to
@@ -220,13 +221,20 @@
                     //Clicking the X
                     if ($(event.target).is(self.close)) {
                         self.hideTimepicker(element);
+                        //for bootstrap popovers
+                        event.stopPropagation();
                     } else if ($(event.target).closest(self.timepicker).length || $(event.target).closest($('.hasWickedpicker')).length) { //Clicking the Wickedpicker or one of it's inputs
                         event.stopPropagation();
                     } else {   //Everything else
                         self.hideTimepicker(element);
+                        //for bootstrap popovers
+                        event.stopPropagation();
                     }
                 }
             };
+            //add handler for timepicker object
+            self.timepicker.off('click', clickHandler).on('click', clickHandler);
+            //add handler for document
             $(document).off('click', clickHandler).on('click', clickHandler);
         },
 
@@ -439,6 +447,8 @@
                 'Wickedpicker': this,
                 'input': element
             }, function (event) {
+                //for bootstrap popovers
+                event.stopPropagation();
                 var operator = (this.className.indexOf('up') > -1) ? '+' : '-';
                 var passedData = event.data;
                 if (event.type == 'mousedown') {
@@ -559,7 +569,21 @@
          */
         timeArrayFromString: function (stringTime) {
             if (stringTime.length) {
+                var isPM = false;
+                //check AM/PM
+                if (stringTime.indexOf('AM') !== -1) {
+                    stringTime = stringTime.replace('AM', '');
+                } else if (stringTime.indexOf('PM') !== -1) {
+                    //+12
+                    isPM = true;
+                    stringTime = stringTime.replace('PM', '');
+                }
+                //delete all white-space
+                stringTime = stringTime.replace(/\s/g, '');
                 var time = stringTime.split(':');
+                if (isPM) {
+                    time[0] = (parseInt(time[0]) + 12).toString();
+                }
                 time[2] = (time.length < 3) ? '00' : time[2];
                 return time;
             }
@@ -573,6 +597,12 @@
         _time: function () {
             var inputValue = $(this.element).val();
             return (inputValue === '') ? this.formatTime(this.selectedHour, this.selectedMin, this.selectedMeridiem, this.selectedSec) : inputValue;
+        },
+        /*
+         * Hide pickers
+         */
+        _hide: function () {
+            this.hideTimepicker();
         }
     });
 

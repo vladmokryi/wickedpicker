@@ -32,7 +32,7 @@
 #### Options
 ```javascript
     var options = {
-        now: "12:35", //hh:mm 24 hour format only, defaults to current time
+        now: "12:35", //defaults to current time, parse 24 hour OR 12 hour format (seconds optional)
         twentyFour: false,  //Display 24 hour format, defaults to false
         upArrow: 'wickedpicker__controls__control-up',  //The up arrow class selector to use, for custom CSS
         downArrow: 'wickedpicker__controls__control-down', //The down arrow class selector to use, for custom CSS
@@ -45,13 +45,14 @@
         beforeShow: null, //A function to be called before the Wickedpicker is shown
         show: null, //A function to be called when the Wickedpicker is shown
         clearable: false, //Make the picker's input clearable (has clickable "x")
+        useValueFromElement: true //get init value from element which is binding
     };
     $('.timepicker').wickedpicker(options);
 ```
 
 #### Methods
 
-'time' get the current time inside of the input element that has a wickedpicker attached to it.
+- 'time' get the current time inside of the input element that has a wickedpicker attached to it.
 ```javascript
     $('.timepicker').wickedpicker('time');
 ```
@@ -61,6 +62,17 @@
  ```javascript
     $('.timepicker').wickedpicker('time', 0);
  ```
+ 
+- 'hide' - hidden all pickers
+```javascript
+    $('.timepicker').wickedpicker('hide');
+```
+  
+  If multiple input fields have the same class and instantiate a wickedpicker then pass the index of the timepicker
+    you'd like to hide
+   ```javascript
+      $('.timepicker').wickedpicker('hide', 0);
+   ```
 
 #### Functionality
     The Wickedpicker opens when the bound input is clicked, or focused on (try tabbing), and it can be closed by either

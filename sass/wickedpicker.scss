@@ -11,7 +11,7 @@ $blue: #3498db;
   margin: 0 auto;
   border-radius: 0.1px;
   width: 270px;
-  height: 130px;
+  height: 140px;
   font-size: 14px;
   display: none;
   &__title {
@@ -60,11 +60,21 @@ $blue: #3498db;
       }
       &-up:before {
         @extend .fontello;
-        content: '\e800';
+        content: '';
+        width: 0 !important;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 10px solid #34495e;
       }
       &-down:after {
         @extend .fontello-after;
-        content: '\e801';
+        content: '';
+        width: 0 !important;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 10px solid #34495e;
       }
       &--separator {
         @extend .wickedpicker__controls__control;
@@ -110,3 +120,24 @@ $blue: #3498db;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.clearable-picker {
+  position: relative;
+  display: inline-block; }
+  .clearable-picker > .hasWickedpicker {
+    padding-right: 1em; }
+  .clearable-picker > .hasWickedpicker::-ms-clear {
+    display: none; }
+  .clearable-picker > [data-clear-picker] {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    font-weight: bold;
+    font-size: 0.8em;
+    padding: 0 0.3em 0.2em;
+    line-height: 1;
+    color: #bababa;
+    cursor: pointer; }
+    .clearable-picker > [data-clear-picker]:hover {
+      color: #a1a1a1; }
